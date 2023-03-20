@@ -1,0 +1,7 @@
+[config]
+
+name="NotificationScheduler"
+binary_type="local"
+binary="NotificationScheduler-1.0-release.aar"
+
+[dependencies]

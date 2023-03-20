@@ -1,0 +1,7 @@
+[config]
+
+name="Deeplink"
+binary_type="local"
+binary="Deeplink-1.0-release.aar"
+
+[dependencies]
