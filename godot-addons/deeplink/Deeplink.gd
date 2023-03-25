@@ -2,7 +2,7 @@ tool
 class_name Deeplink
 extends Node
 
-signal on_deeplink_received(url, scheme, host, path)
+signal deeplink_received(url, scheme, host, path)
 
 const PLUGIN_SINGLETON_NAME: String = "Deeplink"
 
@@ -33,7 +33,7 @@ func _update_plugin() -> void:
 
 		_plugin_singleton.clearData()
 
-		emit_signal("on_deeplink_received", _url, _scheme, _host, _path)
+		emit_signal("deeplink_received", _url, _scheme, _host, _path)
 	else:
 		printerr("%s singleton not found!" % PLUGIN_SINGLETON_NAME)
 

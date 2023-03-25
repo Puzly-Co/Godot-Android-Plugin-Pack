@@ -2,6 +2,6 @@
 
 name="NotificationScheduler"
 binary_type="local"
-binary="NotificationScheduler-1.0-release.aar"
+binary="NotificationScheduler-1.1-release.aar"
 
 [dependencies]

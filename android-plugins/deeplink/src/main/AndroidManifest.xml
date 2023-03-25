@@ -5,8 +5,8 @@
 
     <application>
         <meta-data
-            android:name="org.godotengine.plugin.v1.DeepLink"
-            android:value="co.puzly.deeplink.DeepLink" />
+            android:name="org.godotengine.plugin.v1.Deeplink"
+            android:value="co.puzly.deeplink.Deeplink" />
     </application>
 
 </manifest>

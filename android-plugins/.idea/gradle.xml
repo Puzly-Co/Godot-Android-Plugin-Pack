@@ -11,6 +11,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/deeplink" />
+            <option value="$PROJECT_DIR$/inappreview" />
             <option value="$PROJECT_DIR$/notification" />
           </set>
         </option>

@@ -6,3 +6,11 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+allprojects {
+    project.ext {
+        defaultCompileSdk = 33
+        defaultMinSdk = 21
+        defaultTargetSdk = 33
+    }
+}

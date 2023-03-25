@@ -133,7 +133,7 @@ public class NotificationScheduler extends GodotPlugin {
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     @UsedByGodot
-    public void scheduleWithDeepLink(Dictionary notificationData, int delaySeconds) {
+    public void scheduleWithDeeplink(Dictionary notificationData, int delaySeconds) {
         Activity activity = getActivity();
         if (activity != null) {
             Intent intent = createNotificationIntent(activity.getApplicationContext(), notificationData);
@@ -142,10 +142,10 @@ public class NotificationScheduler extends GodotPlugin {
             int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
             scheduleNotification(activity, notificationId, intent, delaySeconds);
             Log.d(LOG_TAG, String.format("%s():: notification id: %d, channelId: %s, title: %s, content: %s, small_icon_name: %s, deeplink: %s, delay: %d seconds",
-                    "scheduleWithDeepLink", notificationId, notificationData.get(GODOT_DATA_KEY_CHANNEL_ID), notificationData.get(GODOT_DATA_KEY_TITLE),
+                    "scheduleWithDeeplink", notificationId, notificationData.get(GODOT_DATA_KEY_CHANNEL_ID), notificationData.get(GODOT_DATA_KEY_TITLE),
                     notificationData.get(GODOT_DATA_KEY_CONTENT), notificationData.get(GODOT_DATA_KEY_SMALL_ICON_NAME), notificationData.get(GODOT_DATA_KEY_DEEPLINK), delaySeconds));
         } else {
-            Log.e(LOG_TAG, "scheduleWithDeepLink():: can't proceed due to null activity");
+            Log.e(LOG_TAG, "scheduleWithDeeplink():: can't proceed due to null activity");
         }
     }
 
@@ -158,7 +158,7 @@ public class NotificationScheduler extends GodotPlugin {
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     @UsedByGodot
-    public void scheduleRepeatingWithDeepLink(Dictionary notificationData, int delaySeconds, int intervalSeconds) {
+    public void scheduleRepeatingWithDeeplink(Dictionary notificationData, int delaySeconds, int intervalSeconds) {
         Activity activity = getActivity();
         if (activity != null) {
             Intent intent = createNotificationIntent(activity.getApplicationContext(), notificationData);
@@ -167,10 +167,10 @@ public class NotificationScheduler extends GodotPlugin {
             int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
             scheduleRepeatingNotification(activity, notificationId, intent, delaySeconds, intervalSeconds);
             Log.d(LOG_TAG, String.format("%s():: notification id: %d, channelId: %s, title: %s, content: %s, small_icon_name: %s, deeplink: %s, delay: %d seconds, interval: %d seconds",
-                    "scheduleRepeatingWithDeepLink", notificationId, notificationData.get(GODOT_DATA_KEY_CHANNEL_ID), notificationData.get(GODOT_DATA_KEY_TITLE),
+                    "scheduleRepeatingWithDeeplink", notificationId, notificationData.get(GODOT_DATA_KEY_CHANNEL_ID), notificationData.get(GODOT_DATA_KEY_TITLE),
                     notificationData.get(GODOT_DATA_KEY_CONTENT), notificationData.get(GODOT_DATA_KEY_SMALL_ICON_NAME), notificationData.get(GODOT_DATA_KEY_DEEPLINK), delaySeconds, intervalSeconds));
         } else {
-            Log.e(LOG_TAG, "scheduleRepeatingWithDeepLink():: can't proceed due to null activity");
+            Log.e(LOG_TAG, "scheduleRepeatingWithDeeplink():: can't proceed due to null activity");
         }
     }
 
@@ -339,10 +339,16 @@ public class NotificationScheduler extends GodotPlugin {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void cancelNotification(Activity activity, int notificationId) {
+        Context context = activity.getApplicationContext();
+
+        // cancel alarm
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(activity.getApplicationContext(), NotificationReceiver.class);
+        Intent intent = new Intent(context, NotificationReceiver.class);
         intent.putExtra(NotificationReceiver.NOTIFICATION_ID_LABEL, notificationId);
         alarmManager.cancel(PendingIntent.getBroadcast(activity.getApplicationContext(), notificationId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+
+        // cancel notification
+        NotificationManagerCompat.from(context).cancel(notificationId);
     }
 }
