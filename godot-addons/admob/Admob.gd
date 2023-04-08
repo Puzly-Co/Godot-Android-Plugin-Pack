@@ -69,7 +69,7 @@ func _connect_signals() -> void:
 	_plugin_singleton.connect("banner_failed_to_load", self, "_on_banner_failed_to_load")
 	_plugin_singleton.connect("interstitial_opened", self, "_on_interstitial_opened")
 	_plugin_singleton.connect("interstitial_loaded", self, "_on_interstitial_loaded")
-	_plugin_singleton.connect("interstitial_close", self, "_on_interstitial_close")
+	_plugin_singleton.connect("interstitial_closed", self, "_on_interstitial_closed")
 	_plugin_singleton.connect("interstitial_clicked", self, "_on_interstitial_clicked")
 	_plugin_singleton.connect("interstitial_impression", self, "_on_interstitial_impression")
 	_plugin_singleton.connect("interstitial_failed_to_load", self, "_on_interstitial_failed_to_load")
@@ -262,7 +262,7 @@ func _on_interstitial_loaded() -> void:
 	emit_signal("interstitial_loaded")
 
 
-func _on_interstitial_close() -> void:
+func _on_interstitial_closed() -> void:
 	emit_signal("interstitial_closed")
 
 

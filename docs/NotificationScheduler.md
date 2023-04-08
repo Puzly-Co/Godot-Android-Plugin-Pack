@@ -8,6 +8,9 @@ Follow instructions on the following page to create a custom Android build
 
 Upgrade your target Android SDK version to 33 via `Project->Export...->Android->Target SDK`
 
+Prior to using this plugin, a notification icon should be generated. For instructions please visit the following link:
+- https://developer.android.com/studio/write/create-app-icons#notification
+
 ## ![](../godot-addons/notification_scheduler/icon.png?raw=true) Installation
 NotificationScheduler plugin consists of two parts
 - Android plugin
@@ -28,9 +31,6 @@ Unzip the `notification_scheduler-addon.zip` file inside the `addons/` directory
 Then, enable the Godot Notification Scheduler addon via `Project->Project Settings...->Plugins` in the Godot Editor
 
 ## ![](../godot-addons/notification_scheduler/icon.png?raw=true) Usage
-Prior to using this plugin, a notification icon should be generated. For instructions please visit the following link:
-- https://developer.android.com/studio/write/create-app-icons#notification
-
 Add a `NotificationScheduler` node to your scene and follow the following steps:
 - register listeners for the following signals emitted from the `NotificationScheduler` node
     - `permission_granted`
@@ -49,7 +49,7 @@ Add a `NotificationScheduler` node to your scene and follow the following steps:
 ```
 	$NotificationScheduler.create_notification_channel("my_channel_id", "My Channel Name", "My channel description")
 ```
-- Build notification object:
+- Build `NotificationData` object:
 ```
 	var my_notification_data = NotificationData.new()
 	my_notification_data.set_id(__notification_id).\
@@ -61,15 +61,17 @@ Add a `NotificationScheduler` node to your scene and follow the following steps:
 - Schedule notification using the `NotificationScheduler` node:
 ```
 	$NotificationScheduler.schedule(
-			my_notification_data.get_raw_data(),
+			my_notification_data,
 			my_delay_in_seconds
 		)
 ```
 
 ### ![](../godot-addons/notification_scheduler/icon.png?raw=true) Other Available Methods
-- `schedule_repeating(notification_id, channel_id, title, content, delay, interval)`
-- `schedule_with_deeplink(deeplink, notification_id, channel_id, title, content, delay)`
-- `schedule_repeating_with_deeplink(deeplink, notification_id, channel_id, title, content, delay, interval)`
+- `schedule_repeating(notification_data, delay, interval)`
+- `schedule_with_deeplink(notification_data, delay)`
+    - use `NotificationData`'s `set_deeplink()` method to set the deeplink value
+- `schedule_repeating_with_deeplink(notification_data, delay, interval)`
+    - use `NotificationData`'s `set_deeplink()` method to set the deeplink value
 - `cancel(notification_id)`
 
 ## ![](../godot-addons/notification_scheduler/icon.png?raw=true) Troubleshooting

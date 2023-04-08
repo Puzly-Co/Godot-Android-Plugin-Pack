@@ -31,30 +31,30 @@ func create_notification_channel(a_id: String, a_name: String, a_description: St
 		printerr("%s singleton not initialized!" % PLUGIN_SINGLETON_NAME)
 
 
-func schedule(a_notification_data: Dictionary, a_delay_seconds: int) -> void:
+func schedule(a_notification_data: NotificationData, a_delay_seconds: int) -> void:
 	if _plugin_singleton:
-		_plugin_singleton.schedule(a_notification_data, a_delay_seconds)
+		_plugin_singleton.schedule(a_notification_data.get_raw_data(), a_delay_seconds)
 	else:
 		printerr("%s singleton not initialized!" % PLUGIN_SINGLETON_NAME)
 
 
-func schedule_repeating(a_notification_id: int, a_channel_id: String, a_title: String, a_content: String, a_delay_seconds: int, a_interval_seconds: int) -> void:
+func schedule_repeating(a_notification_data: NotificationData, a_delay_seconds: int, a_interval_seconds: int) -> void:
 	if _plugin_singleton:
-		_plugin_singleton.scheduleRepeating(a_notification_id, a_channel_id, a_title, a_content, a_delay_seconds, a_interval_seconds)
+		_plugin_singleton.scheduleRepeating(a_notification_data.get_raw_data(), a_delay_seconds, a_interval_seconds)
 	else:
 		printerr("%s singleton not initialized!" % PLUGIN_SINGLETON_NAME)
 
 
-func schedule_with_deeplink(a_deeplink: String, a_notification_id: int, a_channel_id: String, a_title: String, a_content: String, a_delay_seconds: int) -> void:
+func schedule_with_deeplink(a_notification_data: NotificationData, a_delay_seconds: int) -> void:
 	if _plugin_singleton:
-		_plugin_singleton.scheduleWithDeeplink(a_deeplink, a_notification_id, a_channel_id, a_title, a_content, a_delay_seconds)
+		_plugin_singleton.scheduleWithDeeplink(a_notification_data.get_raw_data(), a_delay_seconds)
 	else:
 		printerr("%s singleton not initialized!" % PLUGIN_SINGLETON_NAME)
 
 
-func schedule_repeating_with_deeplink(a_deeplink: String, a_notification_id: int, a_channel_id: String, a_title: String, a_content: String, a_delay_seconds: int, a_interval_seconds: int) -> void:
+func schedule_repeating_with_deeplink(a_notification_data: NotificationData, a_delay_seconds: int, a_interval_seconds: int) -> void:
 	if _plugin_singleton:
-		_plugin_singleton.scheduleRepeatingWithDeeplink(a_deeplink, a_notification_id, a_channel_id, a_title, a_content, a_delay_seconds, a_interval_seconds)
+		_plugin_singleton.scheduleRepeatingWithDeeplink(a_notification_data.get_raw_data(), a_delay_seconds, a_interval_seconds)
 	else:
 		printerr("%s singleton not initialized!" % PLUGIN_SINGLETON_NAME)
 

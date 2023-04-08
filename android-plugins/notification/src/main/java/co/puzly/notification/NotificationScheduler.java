@@ -30,7 +30,6 @@ import org.godotengine.godot.plugin.GodotPlugin;
 import org.godotengine.godot.plugin.SignalInfo;
 import org.godotengine.godot.plugin.UsedByGodot;
 
-import java.util.Map;
 import java.util.Set;
 
 public class NotificationScheduler extends GodotPlugin {
@@ -50,6 +49,8 @@ public class NotificationScheduler extends GodotPlugin {
 
     static final String NOTIFICATION_ID_LABEL = "GODOT_NOTIFICATION_ID";
 
+    private Activity activity;
+
     public NotificationScheduler(Godot godot) {
         super(godot);
     }
@@ -67,15 +68,10 @@ public class NotificationScheduler extends GodotPlugin {
     public void createNotificationChannel(String id, String name, String description) {
         NotificationChannel channel = new NotificationChannel(id, name, NotificationManager.IMPORTANCE_DEFAULT);
         channel.setDescription(description);
-        Activity activity = getActivity();
-        if (activity != null) {
-            NotificationManager manager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
-            manager.createNotificationChannel(channel);
-            Log.d(LOG_TAG, String.format("%s():: channel id: %s, name: %s, description: %s",
-                    "createNotificationChannel", id, name, description));
-        } else {
-            Log.e(LOG_TAG, "createNotificationChannel():: can't proceed due to null activity");
-        }
+        NotificationManager manager = (NotificationManager) activity.getSystemService(NOTIFICATION_SERVICE);
+        manager.createNotificationChannel(channel);
+        Log.d(LOG_TAG, String.format("%s():: channel id: %s, name: %s, description: %s",
+                "createNotificationChannel", id, name, description));
     }
 
     /**
@@ -87,17 +83,20 @@ public class NotificationScheduler extends GodotPlugin {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @UsedByGodot
     public void schedule(Dictionary notificationData, int delaySeconds) {
-        Activity activity = getActivity();
-        if (activity != null) {
+        if (notificationData.containsKey(GODOT_DATA_KEY_ID) &&
+                notificationData.containsKey(GODOT_DATA_KEY_CHANNEL_ID) &&
+                notificationData.containsKey(GODOT_DATA_KEY_TITLE) &&
+                notificationData.containsKey(GODOT_DATA_KEY_CONTENT) &&
+                notificationData.containsKey(GODOT_DATA_KEY_SMALL_ICON_NAME)) {
             Intent intent = createNotificationIntent(activity.getApplicationContext(), notificationData);
 
-            int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
+            @SuppressWarnings("ConstantConditions") int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
             scheduleNotification(activity, notificationId, intent, delaySeconds);
             Log.d(LOG_TAG, String.format("%s():: notification id: %d, channelId: %s, title: %s, content: %s, small_icon_name: %s, delay: %d seconds",
                     "schedule", notificationId, notificationData.get(GODOT_DATA_KEY_CHANNEL_ID), notificationData.get(GODOT_DATA_KEY_TITLE),
                     notificationData.get(GODOT_DATA_KEY_CONTENT), notificationData.get(GODOT_DATA_KEY_SMALL_ICON_NAME), delaySeconds));
         } else {
-            Log.e(LOG_TAG, "schedule():: can't proceed due to null activity");
+            Log.e(LOG_TAG, "schedule(): invalid notification data object");
         }
     }
 
@@ -111,17 +110,20 @@ public class NotificationScheduler extends GodotPlugin {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @UsedByGodot
     public void scheduleRepeating(Dictionary notificationData, int delaySeconds, int intervalSeconds) {
-        Activity activity = getActivity();
-        if (activity != null) {
+        if (notificationData.containsKey(GODOT_DATA_KEY_ID) &&
+                notificationData.containsKey(GODOT_DATA_KEY_CHANNEL_ID) &&
+                notificationData.containsKey(GODOT_DATA_KEY_TITLE) &&
+                notificationData.containsKey(GODOT_DATA_KEY_CONTENT) &&
+                notificationData.containsKey(GODOT_DATA_KEY_SMALL_ICON_NAME)) {
             Intent intent = createNotificationIntent(activity.getApplicationContext(), notificationData);
 
-            int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
+            @SuppressWarnings("ConstantConditions") int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
             scheduleRepeatingNotification(activity, notificationId, intent, delaySeconds, intervalSeconds);
             Log.d(LOG_TAG, String.format("%s():: notification id: %d, channelId: %s, title: %s, content: %s, small_icon_name: %s, delay: %d seconds, interval: %d seconds",
                     "scheduleRepeating", notificationId, notificationData.get(GODOT_DATA_KEY_CHANNEL_ID), notificationData.get(GODOT_DATA_KEY_TITLE),
                     notificationData.get(GODOT_DATA_KEY_CONTENT), notificationData.get(GODOT_DATA_KEY_SMALL_ICON_NAME), delaySeconds, intervalSeconds));
         } else {
-            Log.e(LOG_TAG, "scheduleRepeating():: can't proceed due to null activity");
+            Log.e(LOG_TAG, "schedule(): invalid notification data object");
         }
     }
 
@@ -134,18 +136,22 @@ public class NotificationScheduler extends GodotPlugin {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @UsedByGodot
     public void scheduleWithDeeplink(Dictionary notificationData, int delaySeconds) {
-        Activity activity = getActivity();
-        if (activity != null) {
+        if (notificationData.containsKey(GODOT_DATA_KEY_ID) &&
+                notificationData.containsKey(GODOT_DATA_KEY_CHANNEL_ID) &&
+                notificationData.containsKey(GODOT_DATA_KEY_TITLE) &&
+                notificationData.containsKey(GODOT_DATA_KEY_CONTENT) &&
+                notificationData.containsKey(GODOT_DATA_KEY_SMALL_ICON_NAME) &&
+                notificationData.containsKey(GODOT_DATA_KEY_DEEPLINK)) {
             Intent intent = createNotificationIntent(activity.getApplicationContext(), notificationData);
             intent.putExtra(NotificationReceiver.NOTIFICATION_URI_LABEL, (String) notificationData.get(GODOT_DATA_KEY_DEEPLINK));
 
-            int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
+            @SuppressWarnings("ConstantConditions") int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
             scheduleNotification(activity, notificationId, intent, delaySeconds);
             Log.d(LOG_TAG, String.format("%s():: notification id: %d, channelId: %s, title: %s, content: %s, small_icon_name: %s, deeplink: %s, delay: %d seconds",
                     "scheduleWithDeeplink", notificationId, notificationData.get(GODOT_DATA_KEY_CHANNEL_ID), notificationData.get(GODOT_DATA_KEY_TITLE),
                     notificationData.get(GODOT_DATA_KEY_CONTENT), notificationData.get(GODOT_DATA_KEY_SMALL_ICON_NAME), notificationData.get(GODOT_DATA_KEY_DEEPLINK), delaySeconds));
         } else {
-            Log.e(LOG_TAG, "scheduleWithDeeplink():: can't proceed due to null activity");
+            Log.e(LOG_TAG, "schedule(): invalid notification data object");
         }
     }
 
@@ -159,18 +165,22 @@ public class NotificationScheduler extends GodotPlugin {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @UsedByGodot
     public void scheduleRepeatingWithDeeplink(Dictionary notificationData, int delaySeconds, int intervalSeconds) {
-        Activity activity = getActivity();
-        if (activity != null) {
+        if (notificationData.containsKey(GODOT_DATA_KEY_ID) &&
+                notificationData.containsKey(GODOT_DATA_KEY_CHANNEL_ID) &&
+                notificationData.containsKey(GODOT_DATA_KEY_TITLE) &&
+                notificationData.containsKey(GODOT_DATA_KEY_CONTENT) &&
+                notificationData.containsKey(GODOT_DATA_KEY_SMALL_ICON_NAME) &&
+                notificationData.containsKey(GODOT_DATA_KEY_DEEPLINK)) {
             Intent intent = createNotificationIntent(activity.getApplicationContext(), notificationData);
             intent.putExtra(NotificationReceiver.NOTIFICATION_URI_LABEL, (String) notificationData.get(GODOT_DATA_KEY_DEEPLINK));
 
-            int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
+            @SuppressWarnings("ConstantConditions") int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
             scheduleRepeatingNotification(activity, notificationId, intent, delaySeconds, intervalSeconds);
             Log.d(LOG_TAG, String.format("%s():: notification id: %d, channelId: %s, title: %s, content: %s, small_icon_name: %s, deeplink: %s, delay: %d seconds, interval: %d seconds",
                     "scheduleRepeatingWithDeeplink", notificationId, notificationData.get(GODOT_DATA_KEY_CHANNEL_ID), notificationData.get(GODOT_DATA_KEY_TITLE),
                     notificationData.get(GODOT_DATA_KEY_CONTENT), notificationData.get(GODOT_DATA_KEY_SMALL_ICON_NAME), notificationData.get(GODOT_DATA_KEY_DEEPLINK), delaySeconds, intervalSeconds));
         } else {
-            Log.e(LOG_TAG, "scheduleRepeatingWithDeeplink():: can't proceed due to null activity");
+            Log.e(LOG_TAG, "schedule(): invalid notification data object");
         }
     }
 
@@ -182,13 +192,8 @@ public class NotificationScheduler extends GodotPlugin {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @UsedByGodot
     public void cancel(int notificationId) {
-        Activity activity = getActivity();
-        if (activity != null) {
-            cancelNotification(activity, notificationId);
-            Log.d(LOG_TAG, "cancel():: notification id: " + notificationId);
-        } else {
-            Log.e(LOG_TAG, "cancel():: can't proceed due to null activity");
-        }
+        cancelNotification(activity, notificationId);
+        Log.d(LOG_TAG, "cancel():: notification id: " + notificationId);
     }
 
     /**
@@ -217,13 +222,8 @@ public class NotificationScheduler extends GodotPlugin {
     public boolean hasPostNotificationsPermission() {
         boolean result = false;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2) {
-            Activity activity = getActivity();
-            if (activity != null) {
-                if (NotificationManagerCompat.from(activity.getApplicationContext()).areNotificationsEnabled()) {
-                    result = true;
-                }
-            } else {
-                Log.e(LOG_TAG, "hasPostNotificationsPermission():: can't check permission status due to null activity");
+            if (NotificationManagerCompat.from(activity.getApplicationContext()).areNotificationsEnabled()) {
+                result = true;
             }
         } else {
             result = true;
@@ -238,16 +238,11 @@ public class NotificationScheduler extends GodotPlugin {
     @UsedByGodot
     public void requestPostNotificationsPermission() {
         try {
-            Activity activity = getActivity();
-            if (activity != null) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2) {
-                    ActivityCompat.requestPermissions(activity, new String[]{ Manifest.permission.POST_NOTIFICATIONS },
-                            POST_NOTIFICATIONS_PERMISSION_REQUEST_CODE);
-                } else {
-                    Log.i(LOG_TAG, "requestPostNotificationsPermission():: can't request permission, because SDK version is " + Build.VERSION.SDK_INT);
-                }
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2) {
+                ActivityCompat.requestPermissions(activity, new String[]{ Manifest.permission.POST_NOTIFICATIONS },
+                        POST_NOTIFICATIONS_PERMISSION_REQUEST_CODE);
             } else {
-                Log.e(LOG_TAG, "requestPostNotificationsPermission():: can't request permission status due to null activity");
+                Log.i(LOG_TAG, "requestPostNotificationsPermission():: can't request permission, because SDK version is " + Build.VERSION.SDK_INT);
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, "requestPostNotificationsPermission():: Failed to request permission due to " + e.getMessage());
@@ -267,6 +262,13 @@ public class NotificationScheduler extends GodotPlugin {
         signals.add(new SignalInfo(PERMISSION_GRANTED_SIGNAL_NAME, String.class));
         signals.add(new SignalInfo(PERMISSION_DENIED_SIGNAL_NAME, String.class));
         return signals;
+    }
+
+    @Nullable
+    @Override
+    public View onMainCreate(Activity activity) {
+        this.activity = activity;
+        return super.onMainCreate(activity);
     }
 
     @Override
@@ -304,6 +306,7 @@ public class NotificationScheduler extends GodotPlugin {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private Intent createNotificationIntent(Context context, Dictionary data) {
         Intent intent = new Intent(context, NotificationReceiver.class);
         intent.putExtra(NotificationReceiver.NOTIFICATION_ID_LABEL, (int) data.get(GODOT_DATA_KEY_ID));
