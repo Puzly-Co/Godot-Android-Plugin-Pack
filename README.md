@@ -1,9 +1,10 @@
 # Godot-Android-Plugin-Pack
 Contains the following Godot plugins for the Android OS.
 
+- [Admob](docs/Admob.md)
 - [Deeplink](docs/Deeplink.md)
-- [Notification Scheduler](docs/NotificationScheduler.md)
 - [In-app Review](docs/InappReview.md)
+- [Notification Scheduler](docs/NotificationScheduler.md)
 
 ## Supported Godot Version
 The plugins have been tested with Godot version 3.5.2

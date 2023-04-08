@@ -13,7 +13,8 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "PluginPack"
-gradle.ext.versionName = "1.1"
+gradle.ext.versionName = "1.2"
 include ':deeplink'
 include ':notification'
 include ':inappreview'
+include ':admob'
