@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/deeplink" />
             <option value="$PROJECT_DIR$/inappreview" />
             <option value="$PROJECT_DIR$/notification" />
+            <option value="$PROJECT_DIR$/share" />
           </set>
         </option>
       </GradleProjectSettings>

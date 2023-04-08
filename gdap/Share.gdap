@@ -1,0 +1,9 @@
+[config]
+
+name="Share"
+binary_type="local"
+binary="Share-1.2-release.aar"
+
+[dependencies]
+
+remote=["androidx.appcompat:appcompat:1.5.1"]

@@ -5,6 +5,7 @@ Contains the following Godot plugins for the Android OS.
 - [Deeplink](docs/Deeplink.md)
 - [In-app Review](docs/InappReview.md)
 - [Notification Scheduler](docs/NotificationScheduler.md)
+- [Share](docs/Share.md)
 
 ## Supported Godot Version
 The plugins have been tested with Godot version 3.5.2
