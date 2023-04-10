@@ -8,13 +8,11 @@ import androidx.annotation.NonNull;
 
 import org.godotengine.godot.Godot;
 import org.godotengine.godot.plugin.GodotPlugin;
-import org.godotengine.godot.plugin.SignalInfo;
 import org.godotengine.godot.plugin.UsedByGodot;
 
-import java.util.Set;
-
 public class Deeplink extends GodotPlugin {
-    private static final String LOG_TAG = "godot::" + Deeplink.class.getSimpleName();
+    private static final String CLASS_NAME = Deeplink.class.getSimpleName();
+    private static final String LOG_TAG = "godot::" + CLASS_NAME;
 
     public Deeplink(Godot godot) {
         super(godot);
@@ -97,12 +95,6 @@ public class Deeplink extends GodotPlugin {
     @NonNull
     @Override
     public String getPluginName() {
-        return this.getClass().getSimpleName();
-    }
-
-    @NonNull
-    @Override
-    public Set<SignalInfo> getPluginSignals() {
-        return super.getPluginSignals();
+        return CLASS_NAME;
     }
 }

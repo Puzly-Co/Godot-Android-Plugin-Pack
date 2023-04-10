@@ -37,10 +37,6 @@ public class RewardedInterstitial {
         MobileAds.initialize(activity);
     }
 
-    public boolean isLoaded() {
-        return rewardedAd != null;
-    }
-
     public void load(final String id, AdRequest adRequest) {
 
         RewardedInterstitialAd.load(activity, id, adRequest, new RewardedInterstitialAdLoadCallback() {

@@ -47,10 +47,6 @@ public class Interstitial {
         }
     }
 
-    public boolean isLoaded() {
-        return interstitialAd != null;
-    }
-
     private void setAd(InterstitialAd interstitialAd) {
         if (interstitialAd == this.interstitialAd)
             return;

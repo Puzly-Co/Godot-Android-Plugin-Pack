@@ -37,10 +37,6 @@ public class RewardedVideo {
         MobileAds.initialize(activity);
     }
 
-    public boolean isLoaded() {
-        return rewardedAd != null;
-    }
-
     public void load(final String id, AdRequest adRequest) {
 
         RewardedAd.load(activity, id, adRequest, new RewardedAdLoadCallback() {

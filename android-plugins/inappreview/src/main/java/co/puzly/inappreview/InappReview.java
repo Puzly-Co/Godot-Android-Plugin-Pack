@@ -32,6 +32,7 @@ public class InappReview extends GodotPlugin {
     private static final String SIGNAL_NAME_REVIEW_FLOW_LAUNCHED = "review_flow_launched";
     private static final String SIGNAL_NAME_REVIEW_FLOW_LAUNCH_FAILED = "review_flow_launch_failed";
 
+    private Activity activity;
     private ReviewManager manager;
     private ReviewInfo reviewInfo;  // needed to launch review flow
 
@@ -61,6 +62,7 @@ public class InappReview extends GodotPlugin {
     @Nullable
     @Override
     public View onMainCreate(Activity activity) {
+        this.activity = activity;
         manager = ReviewManagerFactory.create(activity);
         reviewInfo = null;
         return super.onMainCreate(activity);
@@ -77,9 +79,7 @@ public class InappReview extends GodotPlugin {
             reviewInfo = result; // the result of the task is a ReviewInfo object
             emitSignal(SIGNAL_NAME_REVIEW_INFO_GENERATED);
         });
-        request.addOnFailureListener(task -> {
-            emitSignal(SIGNAL_NAME_REVIEW_INFO_GENERATION_FAILED);
-        });
+        request.addOnFailureListener(task -> emitSignal(SIGNAL_NAME_REVIEW_INFO_GENERATION_FAILED));
     }
 
     /**
@@ -88,24 +88,14 @@ public class InappReview extends GodotPlugin {
      */
     @UsedByGodot
     public void launchReviewFlow() {
-        Activity activity = getActivity();
-        if (activity != null) {
-            if (reviewInfo != null) {
-                Task<Void> flow = manager.launchReviewFlow(activity, reviewInfo);
-                flow.addOnSuccessListener(task -> {
-                    emitSignal(SIGNAL_NAME_REVIEW_FLOW_LAUNCHED);
-                });
-                flow.addOnFailureListener(task -> {
-                    emitSignal(SIGNAL_NAME_REVIEW_FLOW_LAUNCH_FAILED);
-                });
-            } else {
-                emitSignal(SIGNAL_NAME_REVIEW_FLOW_LAUNCH_FAILED);
-                Log.e(LOG_TAG, String.format("%s():: unable to launch review flow because ReviewInfo has not been generated",
-                        "launchReviewFlow"));
-            }
+        if (reviewInfo != null) {
+            Task<Void> flow = manager.launchReviewFlow(activity, reviewInfo);
+            flow.addOnSuccessListener(task -> emitSignal(SIGNAL_NAME_REVIEW_FLOW_LAUNCHED));
+            flow.addOnFailureListener(task -> emitSignal(SIGNAL_NAME_REVIEW_FLOW_LAUNCH_FAILED));
         } else {
             emitSignal(SIGNAL_NAME_REVIEW_FLOW_LAUNCH_FAILED);
-            Log.e(LOG_TAG, "launchReviewFlow():: can't proceed due to null activity");
+            Log.e(LOG_TAG, String.format("%s():: unable to launch review flow because ReviewInfo has not been generated",
+                    "launchReviewFlow"));
         }
     }
 }
