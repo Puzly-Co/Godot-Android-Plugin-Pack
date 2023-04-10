@@ -15,13 +15,17 @@ var _plugin_singleton: Object
 
 
 func init() -> void:
-	if Engine.has_singleton(PLUGIN_SINGLETON_NAME):
-		_plugin_singleton = Engine.get_singleton(PLUGIN_SINGLETON_NAME)
+	if _plugin_singleton == null:
+		if Engine.has_singleton(PLUGIN_SINGLETON_NAME):
+			_plugin_singleton = Engine.get_singleton(PLUGIN_SINGLETON_NAME)
+			_connect_signals()
+		else:
+			printerr("%s singleton not found!" % PLUGIN_SINGLETON_NAME)
 
-		_plugin_singleton.connect(PERMISSION_GRANTED_SIGNAL_NAME, self, "on_permission_granted")
-		_plugin_singleton.connect(PERMISSION_DENIED_SIGNAL_NAME, self, "on_permission_denied")
-	else:
-		printerr("%s singleton not found!" % PLUGIN_SINGLETON_NAME)
+
+func _connect_signals() -> void:
+	_plugin_singleton.connect(PERMISSION_GRANTED_SIGNAL_NAME, self, "on_permission_granted")
+	_plugin_singleton.connect(PERMISSION_DENIED_SIGNAL_NAME, self, "on_permission_denied")
 
 
 func create_notification_channel(a_id: String, a_name: String, a_description: String) -> void:

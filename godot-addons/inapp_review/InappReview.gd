@@ -27,29 +27,33 @@ func _notification(a_what: int) -> void:
 
 
 func _update_plugin() -> void:
-	if Engine.has_singleton(PLUGIN_SINGLETON_NAME):
-		_plugin_singleton = Engine.get_singleton(PLUGIN_SINGLETON_NAME)
+	if _plugin_singleton == null:
+		if Engine.has_singleton(PLUGIN_SINGLETON_NAME):
+			_plugin_singleton = Engine.get_singleton(PLUGIN_SINGLETON_NAME)
+			_connect_signals()
+		else:
+			printerr("%s singleton not found!" % PLUGIN_SINGLETON_NAME)
 
-		_plugin_singleton.connect(SIGNAL_NAME_REVIEW_INFO_GENERATED, self, "on_review_info_generated")
-		_plugin_singleton.connect(SIGNAL_NAME_REVIEW_INFO_GENERATION_FAILED, self, "on_review_info_generation_failed")
-		_plugin_singleton.connect(SIGNAL_NAME_REVIEW_FLOW_LAUNCHED, self, "on_review_flow_launched")
-		_plugin_singleton.connect(SIGNAL_NAME_REVIEW_FLOW_LAUNCH_FAILED, self, "on_review_flow_launch_failed")
-	else:
-		printerr("%s singleton not found!" % PLUGIN_SINGLETON_NAME)
+
+func _connect_signals() -> void:
+	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_INFO_GENERATED, self, "on_review_info_generated")
+	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_INFO_GENERATION_FAILED, self, "on_review_info_generation_failed")
+	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_FLOW_LAUNCHED, self, "on_review_flow_launched")
+	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_FLOW_LAUNCH_FAILED, self, "on_review_flow_launch_failed")
 
 
 func generate_review_info() -> void:
 	if _plugin_singleton != null:
 		_plugin_singleton.generateReviewInfo()
 	else:
-		printerr("InappReview not initialized")
+		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
 
 
 func launch_review_flow() -> void:
 	if _plugin_singleton != null:
 		_plugin_singleton.launchReviewFlow()
 	else:
-		printerr("InappReview not initialized")
+		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
 
 
 func on_review_info_generated() -> void:

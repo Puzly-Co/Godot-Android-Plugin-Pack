@@ -57,10 +57,14 @@ func _notification(a_what: int) -> void:
 
 
 func _update_plugin() -> void:
-	if _plugin_singleton == null and Engine.has_singleton(PLUGIN_SINGLETON_NAME):
-		_plugin_singleton = Engine.get_singleton(PLUGIN_SINGLETON_NAME)
-		_connect_signals()
+	if _plugin_singleton == null:
+		if Engine.has_singleton(PLUGIN_SINGLETON_NAME):
+			_plugin_singleton = Engine.get_singleton(PLUGIN_SINGLETON_NAME)
+			_connect_signals()
+		else:
+			printerr("%s singleton not found!" % PLUGIN_SINGLETON_NAME)
 
+	if _plugin_singleton != null:
 		configure_ads()
 
 

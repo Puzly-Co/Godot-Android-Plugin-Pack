@@ -24,8 +24,13 @@ func _notification(a_what: int) -> void:
 
 
 func _update_plugin() -> void:
-	if Engine.has_singleton(PLUGIN_SINGLETON_NAME):
-		_plugin_singleton = Engine.get_singleton(PLUGIN_SINGLETON_NAME)
+	if _plugin_singleton == null:
+		if Engine.has_singleton(PLUGIN_SINGLETON_NAME):
+			_plugin_singleton = Engine.get_singleton(PLUGIN_SINGLETON_NAME)
+		else:
+			printerr("%s singleton not found!" % PLUGIN_SINGLETON_NAME)
+
+	if _plugin_singleton != null:
 		_url = str(_plugin_singleton.getUrl())
 		_scheme = str(_plugin_singleton.getScheme())
 		_host = str(_plugin_singleton.getHost())
@@ -34,8 +39,6 @@ func _update_plugin() -> void:
 		_plugin_singleton.clearData()
 
 		emit_signal("deeplink_received", _url, _scheme, _host, _path)
-	else:
-		printerr("%s singleton not found!" % PLUGIN_SINGLETON_NAME)
 
 
 func get_link_url() -> String:
