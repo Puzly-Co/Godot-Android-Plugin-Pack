@@ -2,7 +2,7 @@
 
 name="InappReview"
 binary_type="local"
-binary="InappReview-1.1-release.aar"
+binary="InappReview-1.2-release.aar"
 
 [dependencies]
 

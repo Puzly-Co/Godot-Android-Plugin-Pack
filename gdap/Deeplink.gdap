@@ -2,6 +2,8 @@
 
 name="Deeplink"
 binary_type="local"
-binary="Deeplink-1.1-release.aar"
+binary="Deeplink-1.2-release.aar"
 
 [dependencies]
+
+remote=["androidx.appcompat:appcompat:1.5.1"]
