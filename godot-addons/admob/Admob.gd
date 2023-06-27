@@ -171,8 +171,6 @@ func is_rewarded_video_loaded() -> bool:
 
 func load_rewarded_interstitial() -> void:
 	if _plugin_singleton != null:
-		if _plugin_singleton.is_connected("rewarded", self, "_on_rewarded"):
-			print_debug("rewarded signal is connected")
 		_plugin_singleton.loadRewardedInterstitial(rewarded_interstitial_id)
 	else:
 		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
