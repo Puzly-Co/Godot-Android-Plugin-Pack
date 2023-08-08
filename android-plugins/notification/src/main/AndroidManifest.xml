@@ -4,6 +4,13 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application>
+        <activity
+            android:name="co.puzly.notification.ResultActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:taskAffinity="" />
+
         <meta-data
             android:name="org.godotengine.plugin.v1.NotificationScheduler"
             android:value="co.puzly.notification.NotificationScheduler" />

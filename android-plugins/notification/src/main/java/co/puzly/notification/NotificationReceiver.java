@@ -30,15 +30,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     static final String NOTIFICATION_URI_LABEL = "GODOT_NOTIFICATION_URI";
     static final String NOTIFICATION_SMALL_ICON_NAME = "GODOT_NOTIFICATION_SMALL_ICON_NAME";
 
-    private static final String GODOT_APP_CLASSPATH = "com.godot.game.GodotApp";
-    private Class<?> godotAppClass = null;
-
     public NotificationReceiver() {
-        try {
-            godotAppClass = Class.forName(GODOT_APP_CLASSPATH);
-        } catch (ClassNotFoundException e) {
-            Log.e(LOG_TAG, "could not find " + GODOT_APP_CLASSPATH);
-        }
     }
 
     @Override
@@ -49,7 +41,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         String content = receivedIntent.getStringExtra(NOTIFICATION_CONTENT_LABEL);
         String smallIconName = receivedIntent.getStringExtra(NOTIFICATION_SMALL_ICON_NAME);
 
-        Intent notificationActionIntent = new Intent(context, godotAppClass);
+        Intent notificationActionIntent = new Intent(context, ResultActivity.class);
         notificationActionIntent.putExtra(NotificationScheduler.NOTIFICATION_ID_LABEL, notificationId);
         notificationActionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
