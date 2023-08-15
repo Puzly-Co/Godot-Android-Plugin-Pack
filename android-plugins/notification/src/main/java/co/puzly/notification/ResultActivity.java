@@ -20,6 +20,16 @@ public class ResultActivity extends AppCompatActivity {
         } catch (ClassNotFoundException e) {
             Log.e(LOG_TAG, "could not find " + GODOT_APP_CLASSPATH);
         }
-        startActivity(new Intent(getApplicationContext(), godotAppClass));
+
+        Intent godotIntent = new Intent(getApplicationContext(), godotAppClass);
+        godotIntent.putExtras(getIntent());
+        startActivity(godotIntent);
+
+        Bundle bundle = getIntent().getExtras();
+        if (NotificationScheduler.instance != null && bundle != null && bundle.containsKey(NotificationReceiver.NOTIFICATION_ID_LABEL)) {
+            NotificationScheduler.instance.handleNotificationOpened((Integer) bundle.get(NotificationReceiver.NOTIFICATION_ID_LABEL));
+        } else {
+            Log.w(LOG_TAG, "Ignoring notification.  Reason: " + (NotificationScheduler.instance == null ? "instance null" : bundle == null ? "bundle null" : "bundle empty"));
+        }
     }
 }

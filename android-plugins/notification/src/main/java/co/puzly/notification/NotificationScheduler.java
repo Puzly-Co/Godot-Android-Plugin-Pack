@@ -35,8 +35,11 @@ import java.util.Set;
 public class NotificationScheduler extends GodotPlugin {
     private static final String LOG_TAG = "godot::" + NotificationScheduler.class.getSimpleName();
 
+    static NotificationScheduler instance;
+
     private static final String PERMISSION_GRANTED_SIGNAL_NAME = "permission_granted";
     private static final String PERMISSION_DENIED_SIGNAL_NAME = "permission_denied";
+    private static final String NOTIFICATION_OPENED_SIGNAL_NAME = "notification_opened";
 
     private static final String GODOT_DATA_KEY_ID = "id";
     private static final String GODOT_DATA_KEY_CHANNEL_ID = "channel_id";
@@ -46,8 +49,6 @@ public class NotificationScheduler extends GodotPlugin {
     private static final String GODOT_DATA_KEY_SMALL_ICON_NAME = "small_icon_name";
 
     private static final int POST_NOTIFICATIONS_PERMISSION_REQUEST_CODE = 11803;
-
-    static final String NOTIFICATION_ID_LABEL = "GODOT_NOTIFICATION_ID";
 
     private Activity activity;
 
@@ -205,8 +206,8 @@ public class NotificationScheduler extends GodotPlugin {
     public int getNotificationId(int defaultValue) {
         int notificationId;
         Intent intent = Godot.getCurrentIntent();
-        if (intent.hasExtra(NOTIFICATION_ID_LABEL)) {
-            notificationId = intent.getIntExtra(NOTIFICATION_ID_LABEL, defaultValue);
+        if (intent.hasExtra(NotificationReceiver.NOTIFICATION_ID_LABEL)) {
+            notificationId = intent.getIntExtra(NotificationReceiver.NOTIFICATION_ID_LABEL, defaultValue);
             Log.i(LOG_TAG, "getNotificationId():: intent with notification id: " + notificationId);
         } else {
             notificationId = defaultValue;
@@ -259,6 +260,7 @@ public class NotificationScheduler extends GodotPlugin {
     @Override
     public Set<SignalInfo> getPluginSignals() {
         Set<SignalInfo> signals = new ArraySet<>();
+        signals.add(new SignalInfo(NOTIFICATION_OPENED_SIGNAL_NAME, Integer.class));
         signals.add(new SignalInfo(PERMISSION_GRANTED_SIGNAL_NAME, String.class));
         signals.add(new SignalInfo(PERMISSION_DENIED_SIGNAL_NAME, String.class));
         return signals;
@@ -268,6 +270,7 @@ public class NotificationScheduler extends GodotPlugin {
     @Override
     public View onMainCreate(Activity activity) {
         this.activity = activity;
+        instance = this;
         return super.onMainCreate(activity);
     }
 
@@ -284,6 +287,12 @@ public class NotificationScheduler extends GodotPlugin {
                 Log.e(LOG_TAG, "onGodotSetupCompleted():: can't check permission status due to null activity");
             }
         }
+    }
+
+    @Override
+    public void onMainDestroy() {
+        instance = null;
+        super.onMainDestroy();
     }
 
     @Override
@@ -304,6 +313,11 @@ public class NotificationScheduler extends GodotPlugin {
         } else {
             Log.e(LOG_TAG, "onMainRequestPermissionsResult():: can't check permission result, because SDK version is " + Build.VERSION.SDK_INT);
         }
+    }
+
+
+    void handleNotificationOpened(int notificationId) {
+        emitSignal(NOTIFICATION_OPENED_SIGNAL_NAME, notificationId);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -327,21 +341,25 @@ public class NotificationScheduler extends GodotPlugin {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void scheduleNotification(Activity activity, int notificationId, Intent intent, int delaySeconds) {
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calculateTimeAfterDelay(delaySeconds),
+        long timeAfterDelay = calculateTimeAfterDelay(delaySeconds);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, timeAfterDelay,
                 PendingIntent.getBroadcast(activity.getApplicationContext(), notificationId, intent,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+        Log.i(LOG_TAG, "Scheduled notification to be delivered at " + timeAfterDelay);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void scheduleRepeatingNotification(Activity activity, int notificationId, Intent intent, int delaySeconds, int intervalSeconds) {
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calculateTimeAfterDelay(delaySeconds), intervalSeconds*1000L,
+        long timeAfterDelay = calculateTimeAfterDelay(delaySeconds);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeAfterDelay, intervalSeconds*1000L,
                 PendingIntent.getBroadcast(activity.getApplicationContext(), notificationId, intent,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+        Log.i(LOG_TAG, "Scheduled repeating notification to be delivered starting at " + timeAfterDelay + " with " + intervalSeconds + " seconds interval");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void cancelNotification(Activity activity, int notificationId) {
+    private void cancelNotification(Activity activity, int notificationId) {
         Context context = activity.getApplicationContext();
 
         // cancel alarm

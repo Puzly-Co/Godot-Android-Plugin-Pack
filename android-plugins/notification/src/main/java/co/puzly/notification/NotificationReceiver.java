@@ -42,7 +42,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         String smallIconName = receivedIntent.getStringExtra(NOTIFICATION_SMALL_ICON_NAME);
 
         Intent notificationActionIntent = new Intent(context, ResultActivity.class);
-        notificationActionIntent.putExtra(NotificationScheduler.NOTIFICATION_ID_LABEL, notificationId);
+        notificationActionIntent.putExtra(NOTIFICATION_ID_LABEL, notificationId);
         notificationActionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         if (receivedIntent.hasExtra(NOTIFICATION_URI_LABEL)) {

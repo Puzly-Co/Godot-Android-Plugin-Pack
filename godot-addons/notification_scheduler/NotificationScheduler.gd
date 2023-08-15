@@ -2,9 +2,11 @@ tool
 class_name NotificationScheduler
 extends Node
 
+signal notification_opened(notification_id)
 signal permission_granted(permission_name)
 signal permission_denied(permission_name)
 
+const NOTIFICATION_OPENED_SIGNAL_NAME = "notification_opened"
 const PERMISSION_GRANTED_SIGNAL_NAME = "permission_granted"
 const PERMISSION_DENIED_SIGNAL_NAME = "permission_denied"
 
@@ -24,6 +26,7 @@ func init() -> void:
 
 
 func _connect_signals() -> void:
+	_plugin_singleton.connect(NOTIFICATION_OPENED_SIGNAL_NAME, self, "on_notification_opened")
 	_plugin_singleton.connect(PERMISSION_GRANTED_SIGNAL_NAME, self, "on_permission_granted")
 	_plugin_singleton.connect(PERMISSION_DENIED_SIGNAL_NAME, self, "on_permission_denied")
 
@@ -93,6 +96,10 @@ func request_post_notifications_permission() -> void:
 		_plugin_singleton.requestPostNotificationsPermission()
 	else:
 		printerr("%s singleton not initialized!" % PLUGIN_SINGLETON_NAME)
+
+
+func on_notification_opened(a_notification_id: int) -> void:
+	emit_signal(NOTIFICATION_OPENED_SIGNAL_NAME, a_notification_id)
 
 
 func on_permission_granted(a_permission_name: String) -> void:
