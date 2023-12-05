@@ -13,4 +13,7 @@ allprojects {
         defaultMinSdk = 21
         defaultTargetSdk = 33
     }
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
 }

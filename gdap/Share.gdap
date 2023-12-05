@@ -6,4 +6,4 @@ binary="Share-1.2-release.aar"
 
 [dependencies]
 
-remote=["androidx.appcompat:appcompat:1.5.1"]
+remote=["androidx.appcompat:appcompat:1.6.1"]

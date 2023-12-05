@@ -1,5 +1,6 @@
 package co.puzly.deeplink;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -21,13 +22,14 @@ public class Deeplink extends GodotPlugin {
     @UsedByGodot
     public String getUrl() {
         String url = null;
+        Activity activity = getActivity();
+        if (activity != null) {
+            Intent currentIntent = getActivity().getIntent();
 
-        Intent currentIntent = Godot.getCurrentIntent();
-
-        if (currentIntent != null) {
-            url = currentIntent.getDataString();
+            if (currentIntent != null) {
+                url = currentIntent.getDataString();
+            }
         }
-
         Log.d(LOG_TAG, "getUrl() returned " + (url == null ? "null" : url));
         return url;
     }
@@ -36,12 +38,15 @@ public class Deeplink extends GodotPlugin {
     public String getScheme() {
         String scheme = null;
 
-        Intent currentIntent = Godot.getCurrentIntent();
+        Activity activity = getActivity();
+        if (activity != null) {
+            Intent currentIntent = getActivity().getIntent();
 
-        if (currentIntent != null) {
-            Uri uri = currentIntent.getData();
-            if (uri != null) {
-                scheme = uri.getScheme();
+            if (currentIntent != null) {
+                Uri uri = currentIntent.getData();
+                if (uri != null) {
+                    scheme = uri.getScheme();
+                }
             }
         }
 
@@ -53,12 +58,15 @@ public class Deeplink extends GodotPlugin {
     public String getHost() {
         String host = null;
 
-        Intent currentIntent = Godot.getCurrentIntent();
+        Activity activity = getActivity();
+        if (activity != null) {
+            Intent currentIntent = getActivity().getIntent();
 
-        if (currentIntent != null) {
-            Uri uri = currentIntent.getData();
-            if (uri != null) {
-                host = uri.getHost();
+            if (currentIntent != null) {
+                Uri uri = currentIntent.getData();
+                if (uri != null) {
+                    host = uri.getHost();
+                }
             }
         }
 
@@ -70,12 +78,15 @@ public class Deeplink extends GodotPlugin {
     public String getPath() {
         String path = null;
 
-        Intent currentIntent = Godot.getCurrentIntent();
+        Activity activity = getActivity();
+        if (activity != null) {
+            Intent currentIntent = getActivity().getIntent();
 
-        if (currentIntent != null) {
-            Uri uri = currentIntent.getData();
-            if (uri != null) {
-                path = uri.getPath();
+            if (currentIntent != null) {
+                Uri uri = currentIntent.getData();
+                if (uri != null) {
+                    path = uri.getPath();
+                }
             }
         }
 
@@ -85,11 +96,14 @@ public class Deeplink extends GodotPlugin {
 
     @UsedByGodot
     public void clearData() {
-        Intent currentIntent = Godot.getCurrentIntent();
+        Activity activity = getActivity();
+        if (activity != null) {
+            Intent currentIntent = getActivity().getIntent();
 
-        currentIntent.setData(null);
+            currentIntent.setData(null);
 
-        Log.d(LOG_TAG, "clearData() " + (currentIntent.getData() == null ? "successfully" : "unsuccessfully") + " cleared");
+            Log.d(LOG_TAG, "clearData() " + (currentIntent.getData() == null ? "successfully" : "unsuccessfully") + " cleared");
+        }
     }
 
     @NonNull

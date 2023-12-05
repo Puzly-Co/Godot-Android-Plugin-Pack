@@ -18,6 +18,8 @@
         <receiver
             android:name="co.puzly.notification.NotificationReceiver"
             android:process=":remote" />
+
+        <service android:name="co.puzly.notification.NotificationService" />
     </application>
 
 </manifest>

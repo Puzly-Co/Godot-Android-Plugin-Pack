@@ -6,4 +6,4 @@ binary="InappReview-1.2-release.aar"
 
 [dependencies]
 
-remote=["com.google.android.play:core:1.10.3", "androidx.appcompat:appcompat:1.5.1"]
+remote=["com.google.android.play:core:1.10.3", "androidx.appcompat:appcompat:1.6.1"]

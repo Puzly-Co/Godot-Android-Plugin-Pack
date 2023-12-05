@@ -2,11 +2,14 @@ package co.puzly.admob;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -134,14 +137,31 @@ public class Banner {
 
     private AdSize getAdaptiveAdSize() {
         // Determine the screen width (less decorations) to use for the ad width.
-        Display display = activity.getWindowManager().getDefaultDisplay();
+        Display display;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            display = activity.getApplicationContext().getDisplay();
+        } else {
+            display = activity.getWindowManager().getDefaultDisplay();
+        }
+
         DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
+        int widthPixels;
+        float density;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            widthPixels = activity.getWindowManager().getCurrentWindowMetrics().getBounds().width();
+            density = activity.getResources().getConfiguration().densityDpi;
+        } else {
+            display.getMetrics(outMetrics);
+            widthPixels = outMetrics.widthPixels;
+            density = outMetrics.density;
+        }
 
-        float widthPixels = outMetrics.widthPixels;
-        float density = outMetrics.density;
-
-        int adWidth = (int) (widthPixels / density);
+        int adWidth = 50;
+        if (density == 0) {
+            Log.e(LOG_TAG, "Cannot detect display density.");
+        } else {
+            adWidth = (int) (widthPixels / density);
+        }
 
         // Get adaptive ad size and return for setting on the ad view.
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth);

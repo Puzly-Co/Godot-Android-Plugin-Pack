@@ -144,7 +144,7 @@ public class NotificationScheduler extends GodotPlugin {
                 notificationData.containsKey(GODOT_DATA_KEY_SMALL_ICON_NAME) &&
                 notificationData.containsKey(GODOT_DATA_KEY_DEEPLINK)) {
             Intent intent = createNotificationIntent(activity.getApplicationContext(), notificationData);
-            intent.putExtra(NotificationReceiver.NOTIFICATION_URI_LABEL, (String) notificationData.get(GODOT_DATA_KEY_DEEPLINK));
+            intent.putExtra(NotificationService.NOTIFICATION_URI_LABEL, (String) notificationData.get(GODOT_DATA_KEY_DEEPLINK));
 
             @SuppressWarnings("ConstantConditions") int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
             scheduleNotification(activity, notificationId, intent, delaySeconds);
@@ -173,7 +173,7 @@ public class NotificationScheduler extends GodotPlugin {
                 notificationData.containsKey(GODOT_DATA_KEY_SMALL_ICON_NAME) &&
                 notificationData.containsKey(GODOT_DATA_KEY_DEEPLINK)) {
             Intent intent = createNotificationIntent(activity.getApplicationContext(), notificationData);
-            intent.putExtra(NotificationReceiver.NOTIFICATION_URI_LABEL, (String) notificationData.get(GODOT_DATA_KEY_DEEPLINK));
+            intent.putExtra(NotificationService.NOTIFICATION_URI_LABEL, (String) notificationData.get(GODOT_DATA_KEY_DEEPLINK));
 
             @SuppressWarnings("ConstantConditions") int notificationId = (int) notificationData.get(GODOT_DATA_KEY_ID);
             scheduleRepeatingNotification(activity, notificationId, intent, delaySeconds, intervalSeconds);
@@ -204,14 +204,16 @@ public class NotificationScheduler extends GodotPlugin {
      */
     @UsedByGodot
     public int getNotificationId(int defaultValue) {
-        int notificationId;
-        Intent intent = Godot.getCurrentIntent();
-        if (intent.hasExtra(NotificationReceiver.NOTIFICATION_ID_LABEL)) {
-            notificationId = intent.getIntExtra(NotificationReceiver.NOTIFICATION_ID_LABEL, defaultValue);
-            Log.i(LOG_TAG, "getNotificationId():: intent with notification id: " + notificationId);
-        } else {
-            notificationId = defaultValue;
-            Log.i(LOG_TAG, "getNotificationId():: notification id not found");
+        int notificationId = defaultValue;
+        Activity activity = getActivity();
+        if (activity != null) {
+            Intent intent = getActivity().getIntent();
+            if (intent.hasExtra(NotificationService.NOTIFICATION_ID_LABEL)) {
+                notificationId = intent.getIntExtra(NotificationService.NOTIFICATION_ID_LABEL, defaultValue);
+                Log.i(LOG_TAG, "getNotificationId():: intent with notification id: " + notificationId);
+            } else {
+                Log.i(LOG_TAG, "getNotificationId():: notification id not found");
+            }
         }
         return notificationId;
     }
@@ -323,11 +325,11 @@ public class NotificationScheduler extends GodotPlugin {
     @SuppressWarnings("ConstantConditions")
     private Intent createNotificationIntent(Context context, Dictionary data) {
         Intent intent = new Intent(context, NotificationReceiver.class);
-        intent.putExtra(NotificationReceiver.NOTIFICATION_ID_LABEL, (int) data.get(GODOT_DATA_KEY_ID));
-        intent.putExtra(NotificationReceiver.CHANNEL_ID_LABEL, (String) data.get(GODOT_DATA_KEY_CHANNEL_ID));
-        intent.putExtra(NotificationReceiver.NOTIFICATION_TITLE_LABEL, (String) data.get(GODOT_DATA_KEY_TITLE));
-        intent.putExtra(NotificationReceiver.NOTIFICATION_CONTENT_LABEL, (String) data.get(GODOT_DATA_KEY_CONTENT));
-        intent.putExtra(NotificationReceiver.NOTIFICATION_SMALL_ICON_NAME, (String) data.get(GODOT_DATA_KEY_SMALL_ICON_NAME));
+        intent.putExtra(NotificationService.NOTIFICATION_ID_LABEL, (int) data.get(GODOT_DATA_KEY_ID));
+        intent.putExtra(NotificationService.CHANNEL_ID_LABEL, (String) data.get(GODOT_DATA_KEY_CHANNEL_ID));
+        intent.putExtra(NotificationService.NOTIFICATION_TITLE_LABEL, (String) data.get(GODOT_DATA_KEY_TITLE));
+        intent.putExtra(NotificationService.NOTIFICATION_CONTENT_LABEL, (String) data.get(GODOT_DATA_KEY_CONTENT));
+        intent.putExtra(NotificationService.NOTIFICATION_SMALL_ICON_NAME, (String) data.get(GODOT_DATA_KEY_SMALL_ICON_NAME));
         return intent;
     }
 
@@ -365,7 +367,7 @@ public class NotificationScheduler extends GodotPlugin {
         // cancel alarm
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationReceiver.class);
-        intent.putExtra(NotificationReceiver.NOTIFICATION_ID_LABEL, notificationId);
+        intent.putExtra(NotificationService.NOTIFICATION_ID_LABEL, notificationId);
         alarmManager.cancel(PendingIntent.getBroadcast(activity.getApplicationContext(), notificationId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 

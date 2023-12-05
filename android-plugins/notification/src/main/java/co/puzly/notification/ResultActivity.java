@@ -26,8 +26,8 @@ public class ResultActivity extends AppCompatActivity {
         startActivity(godotIntent);
 
         Bundle bundle = getIntent().getExtras();
-        if (NotificationScheduler.instance != null && bundle != null && bundle.containsKey(NotificationReceiver.NOTIFICATION_ID_LABEL)) {
-            NotificationScheduler.instance.handleNotificationOpened((Integer) bundle.get(NotificationReceiver.NOTIFICATION_ID_LABEL));
+        if (NotificationScheduler.instance != null && bundle != null && bundle.containsKey(NotificationService.NOTIFICATION_ID_LABEL)) {
+            NotificationScheduler.instance.handleNotificationOpened(bundle.getInt(NotificationService.NOTIFICATION_ID_LABEL));
         } else {
             Log.w(LOG_TAG, "Ignoring notification.  Reason: " + (NotificationScheduler.instance == null ? "instance null" : bundle == null ? "bundle null" : "bundle empty"));
         }
