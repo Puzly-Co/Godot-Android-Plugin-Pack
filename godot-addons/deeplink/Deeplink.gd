@@ -1,4 +1,4 @@
-tool
+@tool
 class_name Deeplink
 extends Node
 
@@ -19,7 +19,7 @@ func _ready() -> void:
 
 
 func _notification(a_what: int) -> void:
-	if a_what == NOTIFICATION_APP_RESUMED:
+	if a_what == NOTIFICATION_APPLICATION_RESUMED:
 		_update_plugin()
 
 

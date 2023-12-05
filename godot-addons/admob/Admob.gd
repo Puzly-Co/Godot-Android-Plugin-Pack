@@ -1,4 +1,4 @@
-tool
+@tool
 class_name Admob
 extends Node
 
@@ -25,16 +25,16 @@ signal rewarded(currency, amount)
 signal rewarded_clicked
 signal rewarded_impression
 
-export var is_real: bool setget is_real_set
-export var is_banner_on_top: bool = true
-export(String, "ADAPTIVE_BANNER", "BANNER", "LARGE_BANNER", "MEDIUM_RECTANGLE", "FULL_BANNER", "LEADERBOARD") var banner_size = "ADAPTIVE_BANNER"
-export var banner_id: String
-export var interstitial_id: String
-export var rewarded_id: String
-export var rewarded_interstitial_id: String
-export var child_directed: bool = false setget child_directed_set
-export var is_personalized: bool = true setget is_personalized_set
-export(String, "G", "PG", "T", "MA") var max_ad_content_rate = DEFAULT_CONTENT_RATING setget max_ad_content_rate_set
+@export var is_real: bool: set = is_real_set
+@export var is_banner_on_top: bool = true
+@export var banner_size = "ADAPTIVE_BANNER" # (String, "ADAPTIVE_BANNER", "BANNER", "LARGE_BANNER", "MEDIUM_RECTANGLE", "FULL_BANNER", "LEADERBOARD")
+@export var banner_id: String
+@export var interstitial_id: String
+@export var rewarded_id: String
+@export var rewarded_interstitial_id: String
+@export var child_directed: bool = false: set = child_directed_set
+@export var is_personalized: bool = true: set = is_personalized_set
+@export var max_ad_content_rate = DEFAULT_CONTENT_RATING: set = max_ad_content_rate_set
 
 const PLUGIN_SINGLETON_NAME: String = "Admob"
 const VALID_CONTENT_RATINGS: Array = ["G", "PG", "T", "MA"]
@@ -52,7 +52,7 @@ func _ready() -> void:
 
 
 func _notification(a_what: int) -> void:
-	if a_what == NOTIFICATION_APP_RESUMED:
+	if a_what == NOTIFICATION_APPLICATION_RESUMED:
 		_update_plugin()
 
 
@@ -69,28 +69,28 @@ func _update_plugin() -> void:
 
 
 func _connect_signals() -> void:
-	_plugin_singleton.connect("banner_loaded", self, "_on_banner_loaded")
-	_plugin_singleton.connect("banner_failed_to_load", self, "_on_banner_failed_to_load")
-	_plugin_singleton.connect("interstitial_opened", self, "_on_interstitial_opened")
-	_plugin_singleton.connect("interstitial_loaded", self, "_on_interstitial_loaded")
-	_plugin_singleton.connect("interstitial_closed", self, "_on_interstitial_closed")
-	_plugin_singleton.connect("interstitial_clicked", self, "_on_interstitial_clicked")
-	_plugin_singleton.connect("interstitial_impression", self, "_on_interstitial_impression")
-	_plugin_singleton.connect("interstitial_failed_to_load", self, "_on_interstitial_failed_to_load")
-	_plugin_singleton.connect("interstitial_failed_to_show", self, "_on_interstitial_failed_to_show")
-	_plugin_singleton.connect("rewarded_video_loaded", self, "_on_rewarded_video_loaded")
-	_plugin_singleton.connect("rewarded_video_opened", self, "_on_rewarded_video_opened")
-	_plugin_singleton.connect("rewarded_video_closed", self, "_on_rewarded_video_closed")
-	_plugin_singleton.connect("rewarded_video_failed_to_load", self, "_on_rewarded_video_failed_to_load")
-	_plugin_singleton.connect("rewarded_video_failed_to_show", self, "_on_rewarded_video_failed_to_show")
-	_plugin_singleton.connect("rewarded_interstitial_loaded", self, "_on_rewarded_interstitial_loaded")
-	_plugin_singleton.connect("rewarded_interstitial_opened", self, "_on_rewarded_interstitial_opened")
-	_plugin_singleton.connect("rewarded_interstitial_closed", self, "_on_rewarded_interstitial_closed")
-	_plugin_singleton.connect("rewarded_interstitial_failed_to_load", self, "_on_rewarded_interstitial_failed_to_load")
-	_plugin_singleton.connect("rewarded_interstitial_failed_to_show", self, "_on_rewarded_interstitial_failed_to_show")
-	_plugin_singleton.connect("rewarded", self, "_on_rewarded")
-	_plugin_singleton.connect("rewarded_clicked", self, "_on_rewarded_clicked")
-	_plugin_singleton.connect("rewarded_impression", self, "_on_rewarded_impression")
+	_plugin_singleton.connect("banner_loaded", _on_banner_loaded)
+	_plugin_singleton.connect("banner_failed_to_load", _on_banner_failed_to_load)
+	_plugin_singleton.connect("interstitial_opened", _on_interstitial_opened)
+	_plugin_singleton.connect("interstitial_loaded", _on_interstitial_loaded)
+	_plugin_singleton.connect("interstitial_closed", _on_interstitial_closed)
+	_plugin_singleton.connect("interstitial_clicked", _on_interstitial_clicked)
+	_plugin_singleton.connect("interstitial_impression", _on_interstitial_impression)
+	_plugin_singleton.connect("interstitial_failed_to_load", _on_interstitial_failed_to_load)
+	_plugin_singleton.connect("interstitial_failed_to_show", _on_interstitial_failed_to_show)
+	_plugin_singleton.connect("rewarded_video_loaded", _on_rewarded_video_loaded)
+	_plugin_singleton.connect("rewarded_video_opened", _on_rewarded_video_opened)
+	_plugin_singleton.connect("rewarded_video_closed", _on_rewarded_video_closed)
+	_plugin_singleton.connect("rewarded_video_failed_to_load", _on_rewarded_video_failed_to_load)
+	_plugin_singleton.connect("rewarded_video_failed_to_show", _on_rewarded_video_failed_to_show)
+	_plugin_singleton.connect("rewarded_interstitial_loaded", _on_rewarded_interstitial_loaded)
+	_plugin_singleton.connect("rewarded_interstitial_opened", _on_rewarded_interstitial_opened)
+	_plugin_singleton.connect("rewarded_interstitial_closed", _on_rewarded_interstitial_closed)
+	_plugin_singleton.connect("rewarded_interstitial_failed_to_load", _on_rewarded_interstitial_failed_to_load)
+	_plugin_singleton.connect("rewarded_interstitial_failed_to_show", _on_rewarded_interstitial_failed_to_show)
+	_plugin_singleton.connect("rewarded", _on_rewarded)
+	_plugin_singleton.connect("rewarded_clicked", _on_rewarded_clicked)
+	_plugin_singleton.connect("rewarded_impression", _on_rewarded_impression)
 
 
 func is_real_set(a_value: bool) -> void:

@@ -1,4 +1,4 @@
-tool
+@tool
 class_name InappReview
 extends Node
 
@@ -22,7 +22,7 @@ func _ready() -> void:
 
 
 func _notification(a_what: int) -> void:
-	if a_what == NOTIFICATION_APP_RESUMED:
+	if a_what == NOTIFICATION_APPLICATION_RESUMED:
 		_update_plugin()
 
 
@@ -36,10 +36,10 @@ func _update_plugin() -> void:
 
 
 func _connect_signals() -> void:
-	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_INFO_GENERATED, self, "on_review_info_generated")
-	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_INFO_GENERATION_FAILED, self, "on_review_info_generation_failed")
-	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_FLOW_LAUNCHED, self, "on_review_flow_launched")
-	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_FLOW_LAUNCH_FAILED, self, "on_review_flow_launch_failed")
+	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_INFO_GENERATED, _on_review_info_generated)
+	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_INFO_GENERATION_FAILED, _on_review_info_generation_failed)
+	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_FLOW_LAUNCHED, _on_review_flow_launched)
+	_plugin_singleton.connect(SIGNAL_NAME_REVIEW_FLOW_LAUNCH_FAILED, _on_review_flow_launch_failed)
 
 
 func generate_review_info() -> void:
@@ -56,17 +56,17 @@ func launch_review_flow() -> void:
 		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
 
 
-func on_review_info_generated() -> void:
+func _on_review_info_generated() -> void:
 	emit_signal(SIGNAL_NAME_REVIEW_INFO_GENERATED)
 
 
-func on_review_info_generation_failed() -> void:
+func _on_review_info_generation_failed() -> void:
 	emit_signal(SIGNAL_NAME_REVIEW_INFO_GENERATION_FAILED)
 
 
-func on_review_flow_launched() -> void:
+func _on_review_flow_launched() -> void:
 	emit_signal(SIGNAL_NAME_REVIEW_FLOW_LAUNCHED)
 
 
-func on_review_flow_launch_failed() -> void:
+func _on_review_flow_launch_failed() -> void:
 	emit_signal(SIGNAL_NAME_REVIEW_FLOW_LAUNCH_FAILED)

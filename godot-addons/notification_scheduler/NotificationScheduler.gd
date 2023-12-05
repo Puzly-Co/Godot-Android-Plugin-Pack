@@ -1,4 +1,4 @@
-tool
+@tool
 class_name NotificationScheduler
 extends Node
 
@@ -26,9 +26,9 @@ func init() -> void:
 
 
 func _connect_signals() -> void:
-	_plugin_singleton.connect(NOTIFICATION_OPENED_SIGNAL_NAME, self, "on_notification_opened")
-	_plugin_singleton.connect(PERMISSION_GRANTED_SIGNAL_NAME, self, "on_permission_granted")
-	_plugin_singleton.connect(PERMISSION_DENIED_SIGNAL_NAME, self, "on_permission_denied")
+	_plugin_singleton.connect(NOTIFICATION_OPENED_SIGNAL_NAME, _on_notification_opened)
+	_plugin_singleton.connect(PERMISSION_GRANTED_SIGNAL_NAME, _on_permission_granted)
+	_plugin_singleton.connect(PERMISSION_DENIED_SIGNAL_NAME, _on_permission_denied)
 
 
 func create_notification_channel(a_id: String, a_name: String, a_description: String) -> void:
@@ -98,13 +98,13 @@ func request_post_notifications_permission() -> void:
 		printerr("%s singleton not initialized!" % PLUGIN_SINGLETON_NAME)
 
 
-func on_notification_opened(a_notification_id: int) -> void:
+func _on_notification_opened(a_notification_id: int) -> void:
 	emit_signal(NOTIFICATION_OPENED_SIGNAL_NAME, a_notification_id)
 
 
-func on_permission_granted(a_permission_name: String) -> void:
+func _on_permission_granted(a_permission_name: String) -> void:
 	emit_signal(PERMISSION_GRANTED_SIGNAL_NAME, a_permission_name)
 
 
-func on_permission_denied(a_permission_name: String) -> void:
+func _on_permission_denied(a_permission_name: String) -> void:
 	emit_signal(PERMISSION_DENIED_SIGNAL_NAME, a_permission_name)

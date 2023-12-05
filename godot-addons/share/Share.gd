@@ -1,4 +1,4 @@
-tool
+@tool
 class_name Share
 extends Node
 
@@ -12,7 +12,7 @@ func _ready() -> void:
 
 
 func _notification(a_what: int) -> void:
-	if a_what == NOTIFICATION_APP_RESUMED:
+	if a_what == NOTIFICATION_APPLICATION_RESUMED:
 		_update_plugin()
 
 
@@ -38,7 +38,7 @@ func share_image(a_path: String, a_title: String, a_subject: String, a_content: 
 		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
 
 
-func share_viewport(a_viewport: Viewport, a_title: String, a_subject: String, a_content: String) -> void:
+func share_viewport(a_viewport: SubViewport, a_title: String, a_subject: String, a_content: String) -> void:
 	if _plugin_singleton != null:
 		var __image: Image = a_viewport.get_texture().get_data()
 		__image.flip_y()
